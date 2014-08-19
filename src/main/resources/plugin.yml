@@ -1,0 +1,13 @@
+name: ${project.name}
+author: khmDEV
+main: ${project.groupId}.${project.artifactId}.init
+version: ${project.version}
+commands:
+   amigos:
+      permission: amigos.command
+      permission-message: No tienes permisos <permission>
+permissions:
+         amigos.command:
+                 default: op
+softdepend: [APIAuxiliar]
+Depend: [APIAuxiliar]
