@@ -37,7 +37,7 @@ public abstract class IGestor {
 		l1.remove(pl2);
 		friends.put(pl1, l1);
 		List<String> l2 = getFriends(pl2);
-		l2.remove(pl2);
+		l2.remove(pl1);
 		friends.put(pl2, l2);
 	}
 
@@ -77,5 +77,9 @@ public abstract class IGestor {
 
 	public boolean existe(String string) {
 		return friends.containsKey(string);
+	}
+
+	public boolean sonAmigos(String player, String player2) {
+		return getFriends(player).contains(player2);
 	}
 }

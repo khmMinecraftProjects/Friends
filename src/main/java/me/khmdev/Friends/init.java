@@ -9,7 +9,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class init extends JavaPlugin{
 	private Base base;
-
+	private static boolean Bungee=true;
+	public static boolean isBungee(){
+		return Bungee;
+	}
 
 	public void onEnable() {
 		if (!hasPluging("APIAuxiliar")) {
@@ -19,6 +22,7 @@ public class init extends JavaPlugin{
 			setEnabled(false);
 			return;
 		}
+		//Bungee=hasPluging("BungeeCord");
 		base=new Base(this);
 	}
 
@@ -33,7 +37,7 @@ public class init extends JavaPlugin{
 	}
 
 
-	private static boolean hasPluging(String s) {
+	public static boolean hasPluging(String s) {
 		try {
 			return Bukkit.getPluginManager().getPlugin(s).isEnabled();
 		} catch (Exception e) {

@@ -3,13 +3,13 @@ package me.khmdev.Friends;
 import java.util.List;
 
 import me.khmdev.APIAuxiliar.Inventory.CustomInventorys.CItems;
+import me.khmdev.APIAuxiliar.whereIs.SQLControl;
 import me.khmdev.APIBase.API;
 import me.khmdev.APIBase.Almacenes.sql.AlmacenSQL;
 import me.khmdev.Friends.Gestores.GestorNBT;
 import me.khmdev.Friends.Gestores.GestorSQL;
 import me.khmdev.Friends.Gestores.IGestor;
 import me.khmdev.Friends.Gestores.ItemGestor;
-import me.khmdev.Friends.whereIs.SQLControl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,27 +18,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Base implements Listener {
 	private IGestor gestor;
 	private static Base instance;
 	private ItemGestor item;
-	private static final int time = 15;
-
+	private JavaPlugin plugin;
+	
 	public Base(JavaPlugin pl) {
+		Bukkit.getMessenger()
+		.registerOutgoingPluginChannel(pl,"BungeeCord");
+		plugin=pl;
 		instance = this;
 		item = new ItemGestor();
 		CItems.addItem(item);
 		AlmacenSQL sql = API.getInstance().getSql();
 		if (sql.isEnable()) {
-			SQLControl sqlC = new SQLControl(API.getInstance().getSql());
-			Bukkit.getPluginManager().registerEvents(sqlC, pl);
-			Bukkit.getServer().getScheduler()
-					.runTaskTimerAsynchronously(pl, sqlC, time * 20, time * 20);
-
+			
 			gestor = new GestorSQL(sql, pl);
-			for (String s : Constantes.sql) {
+			for (String s : ConstantesFriendSQL.sql) {
 				sql.sendUpdate(s);
 
 			}
@@ -72,6 +72,7 @@ public class Base implements Listener {
 
 	private static String help() {
 		String s = "/amigos listar   lista todos tus amigos\n";
+		s += "/amigos listar   lista toda las peticiones\n";
 		s += "/amigos agregar <Usuario>   agrega un usuario a amigos\n";
 		s += "/amigos eliminar <Usuario>   elimina un amigos\n";
 		s += "/amigos aceptar <Usuario>   acepta una solicitud de amistad\n";
@@ -95,13 +96,19 @@ public class Base implements Listener {
 							+ SQLControl.getServer(string) + ")");
 				}
 				return true;
+			} else if (args[0].equalsIgnoreCase("peticiones")) {
+				List<String> f = gestor.getPeticiones(sender.getName());
+				sender.sendMessage("peticiones:\n");
+				for (String string : f) {
+					sender.sendMessage(string);
+				}
+				return true;
 			} else if (args[0].equalsIgnoreCase("get")) {
-				Player pl = Bukkit.getServer().getPlayer(sender.getName());
+				Player pl = sender instanceof Player?(Player)sender:null;
 				if (pl == null) {
 					return true;
 				}
 				pl.getInventory().addItem(item.getItem());
-				System.out.println(item.getItem());
 				pl.updateInventory();
 				sender.sendMessage("Item enviado");
 				return true;
@@ -174,5 +181,12 @@ public class Base implements Listener {
 
 	public IGestor getGestor() {
 		return gestor;
+	}
+
+	public Plugin getPlugin() {
+		return plugin;
+	}
+	public ItemGestor getItemManager(){
+		return item;
 	}
 }
