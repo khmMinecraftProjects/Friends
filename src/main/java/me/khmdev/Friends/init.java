@@ -1,5 +1,7 @@
 package me.khmdev.Friends;
 
+import me.khmdev.Friends.lang.Lang;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,6 +17,7 @@ public class init extends JavaPlugin{
 	}
 
 	public void onEnable() {
+		Lang.init(this);
 		if (!hasPluging("APIAuxiliar")) {
 			getLogger().severe(
 					getName()
@@ -24,6 +27,9 @@ public class init extends JavaPlugin{
 		}
 		//Bungee=hasPluging("BungeeCord");
 		base=new Base(this);
+		if (init.hasPluging("HUB")) {
+			me.khmdev.HUB.Listeners.ListenerHub.addStandarItem(base.getItemManager().getItem());
+		}
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label,

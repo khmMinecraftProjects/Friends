@@ -21,5 +21,4 @@ public class ConstantesFriendSQL {
 					+ "FOREIGN KEY ( " + celdaAmigo + " ) REFERENCES "
 					+ ConstantesAlmacen.tabla + "( " + ConstantesAlmacen.id
 					+ " ) ON DELETE CASCADE ON UPDATE CASCADE" + ")\n" };
-
 }
